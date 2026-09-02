@@ -1,5 +1,5 @@
 import type { PluginInput } from "@opencode-ai/plugin"
-import { isGptModel } from "../../agents/types"
+import { isHephaestusSupportedModel } from "../../agents/hephaestus"
 import {
   getSessionAgent,
   resolveRegisteredAgentName,
@@ -8,11 +8,10 @@ import {
 import { log } from "../../shared"
 import { getAgentConfigKey } from "../../shared/agent-display-names"
 
-const TOAST_TITLE = "NEVER Use Hephaestus with Non-GPT"
+const TOAST_TITLE = "Unsupported Hephaestus Model"
 const TOAST_MESSAGE = [
-  "Hephaestus is designed exclusively for GPT models.",
-  "Hephaestus is trash without GPT.",
-  "For Claude/Kimi/GLM models, always use Sisyphus.",
+  "Hephaestus supports GPT-5.3 Codex, GPT-5.4, GPT-5.5, GPT-5.6, and GLM-5.3.",
+  "For other models, use Sisyphus.",
 ].join("\n")
 type NoHephaestusNonGptHookOptions = {
   allowNonGptModel?: boolean
@@ -51,7 +50,7 @@ export function createNoHephaestusNonGptHook(
       const modelID = input.model?.modelID
       const allowNonGptModel = options?.allowNonGptModel === true
 
-      if (agentKey === "hephaestus" && modelID && !isGptModel(modelID)) {
+      if (agentKey === "hephaestus" && modelID && !isHephaestusSupportedModel(modelID)) {
         showToast(ctx, input.sessionID, allowNonGptModel ? "warning" : "error")
         if (allowNonGptModel) {
           return

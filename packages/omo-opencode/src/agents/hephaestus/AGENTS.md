@@ -1,6 +1,6 @@
 ---
 name: hephaestus-agent
-description: Developer reference for the Hephaestus autonomous deep worker agent — model variants, key behaviors, and delegation patterns.
+description: Developer reference for the Hephaestus autonomous deep worker agent — GPT and GLM model variants, key behaviors, and delegation patterns.
 ---
 
 # src/agents/hephaestus/ -- Autonomous Deep Worker
@@ -9,7 +9,7 @@ description: Developer reference for the Hephaestus autonomous deep worker agent
 
 ## OVERVIEW
 
-6 source files (+4 co-located tests). Hephaestus agent -- autonomous deep worker with GPT-5.4, GPT-5.5, GPT-5.6, and base-prompt variants. Goal-oriented: give it objectives, not step-by-step instructions. "The Legitimate Craftsman."
+6 source files (+4 co-located tests). Hephaestus agent -- autonomous deep worker with GPT-5.4, GPT-5.5, GPT-5.6, GLM-5.3, and base-prompt variants. Goal-oriented: give it objectives, not step-by-step instructions. "The Legitimate Craftsman."
 
 ## FILES
 
@@ -25,7 +25,7 @@ description: Developer reference for the Hephaestus autonomous deep worker agent
 ## KEY BEHAVIORS
 
 - Mode: `primary` (respects UI model selection)
-- Requires OpenAI-compatible provider (no fallback chain)
+- Requires an explicitly configured supported GPT or GLM provider (no fallback chain)
 - NEVER trusts subagent self-reports -- always verifies
 - NEVER uses `background_cancel(all=true)`
 - Delegates exploration to background agents, never sequential
@@ -39,8 +39,9 @@ description: Developer reference for the Hephaestus autonomous deep worker agent
 | gpt-5.5 | `gpt-5-5.ts` | Task discipline prompt |
 | gpt-5.4 | `gpt-5-4.ts` | XML-tagged blocks, 8 sections |
 | gpt-5.3-codex | `gpt.ts` | Base prompt (`GPT_5_3_CODEX_RE`) |
+| glm-5.3 | `gpt-5-6.ts` | Shared outcome-first prompt with GLM-5.3 identity and max reasoning |
 
-Only GPT-5.3 Codex / 5.4 / 5.5 / 5.6 are supported. Anything else - generic GPT (`gpt-4o`), an unsupported 5.x, a non-GPT model, or no model - throws `UnsupportedHephaestusModelError`. `HephaestusPromptSource` = `"gpt-5-6" | "gpt-5-5" | "gpt-5-4" | "gpt"`.
+Only GPT-5.3 Codex / 5.4 / 5.5 / 5.6 and GLM-5.3 are supported. Anything else - generic GPT (`gpt-4o`), an unsupported 5.x, another non-GPT model, or no model - throws `UnsupportedHephaestusModelError`. `HephaestusPromptSource` also includes `"glm-5-3"`.
 
 `extractModelName()` strips hosted vendor/region prefixes via `HOSTED_VENDOR_PREFIX_RE`, so Bedrock-style ids like `amazon-bedrock/us.openai.gpt-5.4` still route correctly.
 
