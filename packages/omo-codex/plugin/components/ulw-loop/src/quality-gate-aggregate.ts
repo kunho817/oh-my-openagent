@@ -49,6 +49,12 @@ export function aggregateQualityGateDefects(input: unknown, opts: ValidateQualit
 	const review = section(gate["gateReview"], "gateReview", defects);
 	const iteration = section(gate["iteration"], "iteration", defects);
 	const coverage = section(gate["criteriaCoverage"], "criteriaCoverage", defects);
+	if (surface === "omo-senpi") {
+		if (gate["codeReview"] !== undefined) add(defects, "codeReview", "omo-senpi gate has no codeReview lane.");
+	} else {
+		const codeReview = section(gate["codeReview"], "codeReview", defects);
+		reviewer(codeReview["by"], "codeReview.by", ["lazycodex-code-reviewer"], defects);
+	}
 	text(manual["evidence"], "manualQa.evidence", defects);
 	text(review["evidence"], "gateReview.evidence", defects);
 	reviewer(
