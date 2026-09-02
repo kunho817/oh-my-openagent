@@ -99,7 +99,7 @@ export function buildSisyphusJuniorPrompt(
     case "gemini":
       return buildGeminiSisyphusJuniorPrompt(useTaskSystem, promptAppend)
     case "glm-5-2":
-      return buildGlm52SisyphusJuniorPrompt(useTaskSystem, promptAppend)
+      return buildGlm52SisyphusJuniorPrompt(useTaskSystem, promptAppend, model)
     case "default":
     default:
       return buildDefaultSisyphusJuniorPrompt(useTaskSystem, promptAppend)
