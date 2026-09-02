@@ -91,15 +91,18 @@ describe("generateModelConfig provider routes", () => {
       expect(result.agents?.hephaestus).toBeUndefined()
     })
 
-    test("Hephaestus is omitted when only ZAI is available", () => {
+    test("Hephaestus uses GLM 5.3 when only ZAI is available", () => {
       // given only ZAI is available
       const config = createConfig({ hasZaiCodingPlan: true })
 
       // when the generated model config is resolved
       const result = generateModelConfig(config)
 
-      // then Hephaestus has no eligible provider
-      expect(result.agents?.hephaestus).toBeUndefined()
+      // then the Z.ai-only catalog provides the supported GLM route
+      expect(result.agents?.hephaestus).toEqual({
+        model: "zai-coding-plan/glm-5.3",
+        variant: "max",
+      })
     })
   })
 
@@ -203,16 +206,18 @@ describe("generateModelConfig provider routes", () => {
       expect(result.agents?.librarian?.fallback_models?.length).toBeGreaterThan(0)
     })
 
-    test("librarian is omitted when only ZAI is available", () => {
+    test("librarian uses GLM 5.3 Flash when only ZAI is available", () => {
       // given only ZAI is available
       const config = createConfig({ hasZaiCodingPlan: true })
 
       // when the generated model config is resolved
       const result = generateModelConfig(config)
 
-      // then Librarian has no current compatible route
-      expect(result.agents?.librarian).toBeUndefined()
-      expect(JSON.stringify(result)).not.toContain("zai-coding-plan/glm-4.7")
+      // then the Z.ai-only catalog provides the fast GLM route
+      expect(result.agents?.librarian).toEqual({
+        model: "zai-coding-plan/glm-5.3-flash",
+        variant: "low",
+      })
     })
   })
 
