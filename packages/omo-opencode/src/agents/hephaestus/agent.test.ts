@@ -10,6 +10,10 @@ import {
 } from "./index";
 
 describe("isHephaestusSupportedModel with a hosted vendor prefix", () => {
+  test("#given Z.ai GLM 5.3 #when support is checked #then the model is accepted", () => {
+    expect(isHephaestusSupportedModel("zai-coding-plan/glm-5.3")).toBe(true);
+  });
+
   test("#given Bedrock-hosted gpt-5 ids #when support is checked #then the vendor prefix is ignored", () => {
     // given
     const bedrockModels = [
@@ -71,6 +75,10 @@ describe("isHephaestusSupportedModel with a hosted vendor prefix", () => {
 });
 
 describe("getHephaestusPromptSource", () => {
+  test("returns 'glm-5-3' for Z.ai GLM 5.3", () => {
+    expect(getHephaestusPromptSource("zai-coding-plan/glm-5.3")).toBe("glm-5-3");
+  });
+
   test("#given Bedrock-hosted gpt-5 ids #when the prompt source is resolved #then the family-specific prompt is selected", () => {
     // given
     const bedrockModels = [
@@ -241,6 +249,13 @@ describe("getHephaestusPrompt", () => {
 });
 
 describe("createHephaestusAgent", () => {
+  test("uses max reasoning for GLM 5.3", () => {
+    const config = createHephaestusAgent("zai-coding-plan/glm-5.3");
+
+    expect(config.model).toBe("zai-coding-plan/glm-5.3");
+    expect(config.reasoningEffort).toBe("max");
+  });
+
   test("returns AgentConfig with required fields", () => {
     // given
     const model = "openai/gpt-5.4";

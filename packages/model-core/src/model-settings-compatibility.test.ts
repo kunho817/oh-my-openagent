@@ -392,6 +392,38 @@ describe("resolveCompatibleModelSettings", () => {
     }
   })
 
+  test("GLM 5.3 keeps its native low, high, and max reasoningEffort ladder", () => {
+    const cases = [
+      { requested: "low", expected: "low" },
+      { requested: "medium", expected: "low" },
+      { requested: "high", expected: "high" },
+      { requested: "xhigh", expected: "high" },
+      { requested: "max", expected: "max" },
+    ]
+
+    for (const modelID of ["glm-5.3", "glm-5.3-flash"]) {
+      for (const { requested, expected } of cases) {
+        const result = resolveCompatibleModelSettings({
+          providerID: "zai-coding-plan",
+          modelID,
+          desired: { reasoningEffort: requested },
+        })
+
+        expect(result.reasoningEffort).toBe(expected)
+        expect(result.changes).toEqual(
+          requested === expected
+            ? []
+            : [{
+                field: "reasoningEffort",
+                from: requested,
+                to: expected,
+                reason: "unsupported-by-model-family",
+              }],
+        )
+      }
+    }
+  })
+
   test("DeepSeek keeps canonical high and max reasoningEffort values", () => {
     for (const reasoningEffort of ["high", "max"]) {
       const result = resolveCompatibleModelSettings({

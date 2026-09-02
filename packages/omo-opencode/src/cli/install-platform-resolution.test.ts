@@ -4,6 +4,32 @@ import { describe, expect, test } from "bun:test"
 import { resolveCleanupPlatform, resolveInstallArgs } from "./cli-program"
 
 describe("install platform resolution", () => {
+  test("resolves the GLM preset to a non-interactive OpenCode Z.ai-only install", () => {
+    const options = {
+      tui: true,
+      preset: "glm" as const,
+    } as Parameters<typeof resolveInstallArgs>[0] & { preset: "glm" }
+
+    const args = resolveInstallArgs(options, "omo")
+
+    expect(args).toMatchObject({
+      tui: false,
+      platform: "opencode",
+      claude: "no",
+      openai: "no",
+      gemini: "no",
+      copilot: "no",
+      opencodeZen: "no",
+      zaiCodingPlan: "yes",
+      kimiForCoding: "no",
+      opencodeGo: "no",
+      bailianCodingPlan: "no",
+      minimaxCnCodingPlan: "no",
+      minimaxCodingPlan: "no",
+      vercelAiGateway: "no",
+    })
+  })
+
   test("leaves omo install without --platform unresolved for config defaults", () => {
     // given
     const invocationName = "omo"
@@ -128,6 +154,8 @@ describe("install platform resolution", () => {
     expect(installBlock).not.toBeNull()
     expect(installBlock?.[1]).toContain('new Option("--platform <platform>"')
     expect(installBlock?.[1]).toContain(".choices(availableInstallPlatforms())")
+    expect(installBlock?.[1]).toContain('new Option("--preset <preset>"')
+    expect(installBlock?.[1]).toContain('.choices(["glm"])')
     expect(installBlock?.[1]).toContain("--codex-autonomous")
     expect(installBlock?.[1]).toContain("--no-codex-autonomous")
   })

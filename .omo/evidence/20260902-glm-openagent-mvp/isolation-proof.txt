@@ -1,0 +1,25 @@
+GLM OpenAgent MVP isolation proof
+
+All OpenCode-spawning commands redirected HOME, USERPROFILE, XDG_DATA_HOME,
+XDG_CONFIG_HOME, XDG_STATE_HOME, XDG_CACHE_HOME, OPENCODE_CONFIG_DIR,
+APPDATA, LOCALAPPDATA, temporary directories, Bun cache, and npm cache into
+the task-owned .omo/qa-runtime/glm-preset tree. Anonymous telemetry was off.
+
+REAL USER STATE BEFORE QA
+OpenCode config SHA256: 7D4F9A6F28FD1FAED938B65F8988456E1667BB913621E5EBDEE44C73ED9AC0DB
+OpenCode session DB SHA256: FA8B49BD5D4E9D33EE23B6FE49FEA327002E34CDB85B9BF3E740651FC22B4173
+OpenCode session count: 0
+User-level omo.json or omo.jsonc: absent
+
+REAL USER STATE AFTER QA
+OpenCode config SHA256: 7D4F9A6F28FD1FAED938B65F8988456E1667BB913621E5EBDEE44C73ED9AC0DB
+OpenCode session DB SHA256: FA8B49BD5D4E9D33EE23B6FE49FEA327002E34CDB85B9BF3E740651FC22B4173
+OpenCode session count: 0
+User-level omo.json or omo.jsonc: absent
+
+Result: real user state remained unchanged.
+
+CLEANUP
+Owned mock PID: 28288
+Process still running after Stop-Process: false
+Port 18765 still listening after cleanup: false

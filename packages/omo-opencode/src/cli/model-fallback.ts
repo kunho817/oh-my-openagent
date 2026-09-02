@@ -9,6 +9,7 @@ import type { InstallConfig } from "./types"
 
 import type { AgentConfig, CategoryConfig, GeneratedOmoConfig } from "./model-fallback-types"
 import { applyOpenAiOnlyModelCatalog, isOpenAiOnlyAvailability } from "./openai-only-model-catalog"
+import { applyZaiOnlyModelCatalog, isZaiOnlyAvailability } from "./zai-only-model-catalog"
 import { isProviderAvailable, toProviderAvailability } from "./provider-availability"
 import {
 	getSisyphusFallbackChain,
@@ -281,9 +282,13 @@ export function generateModelConfig(config: InstallConfig): GeneratedOmoConfig {
     categories,
   }
 
-  return isOpenAiOnlyAvailability(avail)
-    ? applyOpenAiOnlyModelCatalog(generatedConfig)
-    : generatedConfig
+  if (isOpenAiOnlyAvailability(avail)) {
+    return applyOpenAiOnlyModelCatalog(generatedConfig)
+  }
+  if (isZaiOnlyAvailability(avail)) {
+    return applyZaiOnlyModelCatalog(generatedConfig)
+  }
+  return generatedConfig
 }
 
 export function shouldShowChatGPTOnlyWarning(config: InstallConfig): boolean {

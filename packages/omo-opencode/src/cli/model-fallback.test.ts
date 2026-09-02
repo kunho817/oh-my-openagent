@@ -77,27 +77,30 @@ describe("generateModelConfig", () => {
       expect(result.categories?.["unspecified-low"]?.model).toBe("github-copilot/grok-4.6")
       expect(result.categories?.["unspecified-low"]?.variant).toBe("high")
     })
-    test("omits librarian when only ZAI is available", () => {
+    test("routes librarian to GLM 5.3 Flash when only ZAI is available", () => {
       // #given only ZAI is available
       const config = createConfig({ hasZaiCodingPlan: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should not use a stale ZAI special case
-      expect(result.agents?.librarian).toBeUndefined()
+      // #then librarian should use the current fast GLM route, not the stale GLM 4.7 special case
+      expect(result.agents?.librarian).toEqual({
+        model: "zai-coding-plan/glm-5.3-flash",
+        variant: "low",
+      })
       expect(JSON.stringify(result)).not.toContain("zai-coding-plan/glm-4.7")
     })
 
-    test("omits librarian when only ZAI is available with isMax20 flag", () => {
+    test("keeps the ZAI-only GLM catalog unchanged with isMax20 flag", () => {
       // #given ZAI is available with Max 20 plan
       const config = createConfig({ hasZaiCodingPlan: true, isMax20: true })
 
       // #when generateModelConfig is called
       const result = generateModelConfig(config)
 
-      // #then librarian should not use a stale ZAI special case
-      expect(result.agents?.librarian).toBeUndefined()
+      // #then the Claude-specific plan flag should not alter the Z.ai-only catalog
+      expect(result).toEqual(generateModelConfig(createConfig({ hasZaiCodingPlan: true })))
       expect(JSON.stringify(result)).not.toContain("zai-coding-plan/glm-4.7")
     })
 

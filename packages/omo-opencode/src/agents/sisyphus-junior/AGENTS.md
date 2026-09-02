@@ -25,7 +25,7 @@ description: Developer reference for the Sisyphus-Junior category-spawned execut
 | `kimi-k2-6.ts` | Kimi K2.6 prompt variant |
 | `kimi-k2-7.ts` | Kimi K2.7-native prompt variant |
 | `kimi-k3.ts` | Kimi K3-native prompt variant (reasoning depth with built-in stop conditions) |
-| `glm-5-2.ts` | GLM-5.2-native prompt variant |
+| `glm-5-2.ts` | Shared GLM-5.2/GLM-5.3 model-aware prompt variant |
 | `index.test.ts` | Unit tests |
 
 ## VARIANT SELECTION

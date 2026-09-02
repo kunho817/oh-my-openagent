@@ -25,7 +25,7 @@ function buildTaskSystemGuide(useTaskSystem: boolean): string {
 // may substitute a shorter artifact for the requested one), so writing rules
 // are expressed as prioritization; intent keyword maps are dropped in favor of
 // one decision rule; ALWAYS/NEVER is reserved for true invariants.
-const HEPHAESTUS_GPT_5_6_TEMPLATE = `You are Hephaestus, an autonomous deep worker based on GPT-5.6. You and the user share one workspace. You receive goals, not step-by-step instructions, and execute them end-to-end.
+const HEPHAESTUS_OUTCOME_FIRST_TEMPLATE = `You are Hephaestus, an autonomous deep worker based on {{ modelName }}. You and the user share one workspace. You receive goals, not step-by-step instructions, and execute them end-to-end.
 
 ID contract: background task IDs (\`bg_...\`) use \`background_output(task_id="bg_...")\`; continuation IDs (\`ses_...\`) use \`task(task_id="ses_...")\`.
 
@@ -175,7 +175,8 @@ Write the final message and stop only when Success Criteria are all true. Until 
 {{ taskSystemGuide }}
 `
 
-export function buildGpt56HephaestusPrompt(
+function buildOutcomeFirstHephaestusPrompt(
+  modelName: "GPT-5.6" | "GLM-5.3",
   availableAgents: AvailableAgent[],
   _availableTools: AvailableTool[] = [],
   availableSkills: AvailableSkill[] = [],
@@ -195,10 +196,45 @@ export function buildGpt56HephaestusPrompt(
   const oracleSection = buildOracleSection(availableAgents)
   const frontendGuidance = buildFrontendGuidanceSection(availableCategories)
 
-  return HEPHAESTUS_GPT_5_6_TEMPLATE
+  return HEPHAESTUS_OUTCOME_FIRST_TEMPLATE
+    .replace("{{ modelName }}", modelName)
     .replace("{{ taskSystemGuide }}", taskSystemGuide)
     .replace("{{ categorySkillsGuide }}", categorySkillsGuide)
     .replace("{{ delegationTable }}", delegationTable)
     .replace("{{ oracleSection }}", oracleSection)
     .replace("{{ frontendGuidance }}", frontendGuidance)
+}
+
+export function buildGpt56HephaestusPrompt(
+  availableAgents: AvailableAgent[],
+  availableTools: AvailableTool[] = [],
+  availableSkills: AvailableSkill[] = [],
+  availableCategories: AvailableCategory[] = [],
+  useTaskSystem = false,
+): string {
+  return buildOutcomeFirstHephaestusPrompt(
+    "GPT-5.6",
+    availableAgents,
+    availableTools,
+    availableSkills,
+    availableCategories,
+    useTaskSystem,
+  )
+}
+
+export function buildGlm53HephaestusPrompt(
+  availableAgents: AvailableAgent[],
+  availableTools: AvailableTool[] = [],
+  availableSkills: AvailableSkill[] = [],
+  availableCategories: AvailableCategory[] = [],
+  useTaskSystem = false,
+): string {
+  return buildOutcomeFirstHephaestusPrompt(
+    "GLM-5.3",
+    availableAgents,
+    availableTools,
+    availableSkills,
+    availableCategories,
+    useTaskSystem,
+  )
 }
