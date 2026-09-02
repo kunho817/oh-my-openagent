@@ -53,6 +53,38 @@ describe("aggregated quality gate validation", () => {
 		}
 	});
 
+	it("#given missing required fields #when validating #then reports each field in one error", () => {
+		const gate = {
+			manualQa: { evidence: "qa", artifactRefs: [] },
+			gateReview: { by: "invalid", recommendation: "REJECT", evidence: "", reportPath: "", blockers: ["blocker"] },
+			iteration: { fullRerun: false, status: "failed", rerunCommands: [], evidence: "" },
+			criteriaCoverage: {
+				totalCriteria: "bad",
+				passCount: 0,
+				originalIntent: "",
+				desiredOutcome: "",
+				userOutcomeReview: "",
+				adversarialClassesCovered: [],
+			},
+		};
+		expect(() => validateQualityGate(gate, { reviewerSurface: "omo-senpi" })).toThrow(/gateReview\.by/);
+		try {
+			validateQualityGate(gate, { reviewerSurface: "omo-senpi" });
+		} catch (error) {
+			expect(error).toBeInstanceOf(UlwLoopError);
+			if (!(error instanceof UlwLoopError)) throw error;
+			const fields = error.details?.["fields"];
+			expect(Array.isArray(fields) ? fields.map((field) => field["field"]) : []).toEqual(
+				expect.arrayContaining([
+					"gateReview.by",
+					"iteration.status",
+					"criteriaCoverage.totalCriteria",
+					"manualQa.artifactRefs",
+				]),
+			);
+		}
+	});
+
 	it("#given more than twenty-five defects #when validating #then caps the list and flags truncation", () => {
 		const refs = Array.from({ length: 30 }, (_, index) => ({
 			id: `ref-${index}`,

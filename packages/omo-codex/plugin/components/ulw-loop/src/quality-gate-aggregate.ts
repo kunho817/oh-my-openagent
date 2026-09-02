@@ -22,19 +22,82 @@ function section(value: unknown, field: string, defects: Defect[]): Record<strin
 	return value;
 }
 
+function requiredArray(value: unknown, field: string, defects: Defect[]): readonly unknown[] {
+	if (!Array.isArray(value) || value.length === 0) add(defects, field, `Final quality gate requires ${field}.`);
+	return Array.isArray(value) ? value : [];
+}
+
+function emptyArray(value: unknown, field: string, defects: Defect[]): void {
+	if (!Array.isArray(value) || value.length !== 0) add(defects, field, `${field} must be empty.`);
+}
+
+function literal(value: unknown, expected: string | boolean, field: string, defects: Defect[]): void {
+	if (value !== expected) add(defects, field, `${field} must be ${String(expected)}.`);
+}
+
+function reviewer(value: unknown, field: string, accepted: readonly string[], defects: Defect[]): void {
+	if (typeof value !== "string" || !accepted.includes(value))
+		add(defects, field, `${field} must be one of ${accepted.join(", ")}.`);
+}
+
 export function aggregateQualityGateDefects(input: unknown, opts: ValidateQualityGateOptions | undefined): void {
 	if (!isRecord(input)) return;
 	const defects: Defect[] = [];
+	const surface = opts?.reviewerSurface ?? "lazycodex";
 	const gate = input;
 	const manual = section(gate["manualQa"], "manualQa", defects);
 	const review = section(gate["gateReview"], "gateReview", defects);
+	const iteration = section(gate["iteration"], "iteration", defects);
+	const coverage = section(gate["criteriaCoverage"], "criteriaCoverage", defects);
 	text(manual["evidence"], "manualQa.evidence", defects);
 	text(review["evidence"], "gateReview.evidence", defects);
+	reviewer(
+		manual["by"],
+		"manualQa.by",
+		surface === "omo-senpi" ? ["main-session"] : ["lazycodex-qa-executor"],
+		defects,
+	);
+	reviewer(
+		review["by"],
+		"gateReview.by",
+		surface === "omo-senpi"
+			? ["category:deep", "category:unspecified-high", "category:unspecified-low"]
+			: ["lazycodex-gate-reviewer"],
+		defects,
+	);
 	if (review["recommendation"] !== "APPROVE")
 		add(defects, "gateReview.recommendation", "gateReview.recommendation must be APPROVE.");
-	const artifacts = Array.isArray(manual["artifactRefs"]) ? manual["artifactRefs"] : [];
+	text(review["reportPath"], "gateReview.reportPath", defects);
+	emptyArray(review["blockers"], "gateReview.blockers", defects);
+	literal(iteration["fullRerun"], true, "iteration.fullRerun", defects);
+	literal(iteration["status"], "passed", "iteration.status", defects);
+	text(iteration["evidence"], "iteration.evidence", defects);
+	requiredArray(iteration["rerunCommands"], "iteration.rerunCommands", defects);
+	for (const field of ["originalIntent", "desiredOutcome", "userOutcomeReview"])
+		text(coverage[field], `criteriaCoverage.${field}`, defects);
+	for (const field of ["totalCriteria", "passCount"]) {
+		if (typeof coverage[field] !== "number" || !Number.isFinite(coverage[field]))
+			add(defects, `criteriaCoverage.${field}`, `Final quality gate requires numeric criteriaCoverage.${field}.`);
+	}
+	if (
+		typeof coverage["totalCriteria"] === "number" &&
+		typeof coverage["passCount"] === "number" &&
+		coverage["passCount"] < coverage["totalCriteria"]
+	)
+		add(defects, "criteriaCoverage.passCount", "criteriaCoverage.passCount must cover totalCriteria.");
+	requiredArray(coverage["adversarialClassesCovered"], "criteriaCoverage.adversarialClassesCovered", defects);
+	const artifacts = requiredArray(manual["artifactRefs"], "manualQa.artifactRefs", defects);
 	for (const [index, item] of artifacts.entries()) {
-		if (!isRecord(item)) continue;
+		if (!isRecord(item)) {
+			add(
+				defects,
+				`manualQa.artifactRefs[${index}]`,
+				`Final quality gate requires manualQa.artifactRefs[${index}] evidence.`,
+			);
+			continue;
+		}
+		for (const field of ["id", "kind", "description", "path"])
+			text(item[field], `manualQa.artifactRefs[${index}].${field}`, defects);
 		const path = item["path"];
 		if (typeof path !== "string" || path.trim() === "") continue;
 		if (opts?.repoRoot !== undefined && opts.fs !== undefined && !opts.fs.existsSync(resolve(opts.repoRoot, path)))
