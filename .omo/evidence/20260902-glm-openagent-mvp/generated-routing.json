@@ -1,0 +1,33 @@
+{
+  "installCommand": "bun <built-cli> install --preset=glm --skip-auth",
+  "exitCode": 0,
+  "platform": "opencode",
+  "selectedProviders": ["zai-coding-plan"],
+  "agentCount": 11,
+  "categoryCount": 8,
+  "foreignModelCount": 0,
+  "fallbackModelCount": 0,
+  "agents": {
+    "sisyphus": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "hephaestus": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "oracle": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "librarian": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "low" },
+    "explore": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "low" },
+    "multimodal-looker": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "max" },
+    "prometheus": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "metis": { "model": "zai-coding-plan/glm-5.3", "reasoning": "high" },
+    "momus": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "atlas": { "model": "zai-coding-plan/glm-5.3", "reasoning": "high" },
+    "sisyphus-junior": { "model": "zai-coding-plan/glm-5.3", "reasoning": "high" }
+  },
+  "categories": {
+    "visual-engineering": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "max" },
+    "ultrabrain": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "deep": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "artistry": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "max" },
+    "quick": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "low" },
+    "unspecified-low": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "low" },
+    "unspecified-high": { "model": "zai-coding-plan/glm-5.3", "reasoning": "max" },
+    "writing": { "model": "zai-coding-plan/glm-5.3-flash", "reasoning": "low" }
+  }
+}

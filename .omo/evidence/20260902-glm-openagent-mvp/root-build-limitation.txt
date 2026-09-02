@@ -1,0 +1,18 @@
+Command: bun run build
+Result: environment-limited, not counted as a passing gate
+
+Observed boundary:
+- The root build reached shared-skill materialization.
+- Materialization of packages/shared-skills/upstreams/open-design failed in the
+  nested submodule because local file transport was disallowed in this Windows
+  environment and the expected nested commit was unavailable.
+- This path is unrelated to model-core and omo-opencode source changed here.
+
+Compensating evidence that passed:
+- packages/model-core typecheck
+- packages/omo-opencode typecheck
+- 244 affected tests and 554 assertions under the normal repository preload
+- direct bundle of packages/omo-opencode/src/index.ts
+- direct bundle of packages/omo-opencode/src/cli/index.ts
+
+The PR CI build remains the authoritative clean-environment root build gate.

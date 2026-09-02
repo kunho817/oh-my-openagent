@@ -1,0 +1,68 @@
+GLM OpenAgent MVP automated gate receipt
+Date: 2026-09-02 through 2026-09-03 Asia/Seoul
+
+FAILING-FIRST BOUNDARIES
+
+1. GLM-5.3 capability
+   Command scope: model-settings compatibility test filtered to GLM 5.3
+   Exit: 1 before implementation
+   Observation: expected reasoning level low, received high, proving the model fell through to the legacy generic GLM ladder.
+
+2. Hephaestus GLM-5.3 support
+   Command scope: focused Hephaestus factory and non-GPT guard tests
+   Exit: 1 before implementation
+   Observation: four expected failures covered support detection, prompt selection, factory creation, and guard behavior.
+
+3. Z.ai-only routing catalog
+   Command scope: focused catalog suite
+   Exit: 1 before implementation
+   Observation: missing routes fell back to opencode/gpt-5-nano and the diff enumerated the unmapped agents/categories.
+
+4. GLM installer preset
+   Command scope: install platform resolution test filtered to the GLM preset
+   Exit: 1 before implementation
+   Observation: provider/platform fields were undefined, TUI remained enabled, and the CLI option was absent.
+
+GREEN GATES
+
+Command: bun run typecheck
+Working directory: repository root
+Exit: 0
+Observed: root tsgo, script tooling, and every workspace package typecheck completed successfully.
+
+Command: bun run typecheck
+Working package: packages/model-core
+Exit: 0
+
+Command: bun run typecheck
+Working package: packages/omo-opencode
+Exit: 0
+
+Command: consolidated affected Bun test suite with the normal repository preload
+Coverage: model capability compatibility, Sisyphus and Sisyphus-Junior routing, Hephaestus factory/guard, Z.ai-only catalog, provider fallbacks, and install argument resolution
+Exit: 0
+Observed: 244 pass, 0 fail, 554 assertions
+
+Command: bun run build:lsp-daemon
+Exit: 0
+Observed: the normal repository preload prerequisite built successfully; npm reported 0 vulnerabilities.
+
+Command: bun build packages/omo-opencode/src/index.ts --outdir .omo/qa-dist/plugin --target bun --format esm --external zod
+Exit: 0
+Observed: 2015 modules bundled, approximately 5.88 MB.
+
+Command: bun build packages/omo-opencode/src/cli/index.ts --outdir .omo/qa-dist/cli --target bun --format esm
+Exit: 0
+Observed: 925 modules bundled, approximately 3.37 MB.
+
+Command: bun .omo/qa-dist/cli/index.js install --help
+Exit: 0
+Observed: help lists --preset <preset>, choice glm, the one-command preset example, and Z.ai GLM-5.3 plus GLM-5.3-Flash models.
+
+Command: git diff --check upstream/dev...HEAD
+Exit: 0
+Observed: no whitespace errors.
+
+Command: bun test packages/omo-opencode/src/shared/markdown-link-audit.test.ts
+Exit: 0 after supplying task-worktree safe.directory entries to the spawned Git process
+Observed: 16 pass, 0 fail, 21 assertions.

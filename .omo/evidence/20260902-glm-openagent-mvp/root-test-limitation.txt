@@ -1,0 +1,18 @@
+Command: bun test
+Result: environment-limited, not counted as a passing gate
+Runtime: Bun 1.3.9 on Windows 11 x64
+
+Observed unrelated failures included:
+- OMO native payload fixtures missing shared-skill materialized assets.
+- Directory asset embedding requiring Bun 1.4 or newer while this host supplied Bun 1.3.9.
+- A stale generated Codex installer version fixture in the base checkout.
+- npm dry-run payload verification unable to write the host npm cache under the sandbox.
+- The open-design shared-skill submodule not being initialized.
+- Windows-only timing or process-fixture failures in root-test-config, git-bash-mcp,
+  and lsp-daemon tests.
+- Bun terminated with an internal assertion failure after roughly 122 seconds.
+
+No failure named a changed GLM capability, agent, routing catalog, or installer
+preset test. The consolidated changed-surface suite passed 244 tests with 554
+assertions under the normal repository preload, and the complete root workspace
+typecheck passed. Clean Linux PR CI remains the authoritative root-suite gate.

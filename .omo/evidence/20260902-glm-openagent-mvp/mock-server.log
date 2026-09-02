@@ -1,0 +1,7 @@
+[2026-09-02T12:03:41.392Z] START port=18765
+[2026-09-02T12:08:43.119Z] branch=title call=1
+[2026-09-02T12:08:43.400Z] branch=default call=2
+[2026-09-02T12:10:59.805Z] branch=title call=3
+[2026-09-02T12:10:59.859Z] branch=default call=4
+
+Cleanup verified on 2026-09-03 Asia/Seoul: owned PID stopped and port 18765 no longer listening.

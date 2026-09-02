@@ -1,0 +1,33 @@
+{
+  "opencodeVersion": "1.14.23",
+  "transport": "isolated local OpenAI-compatible mock",
+  "runs": [
+    {
+      "command": "opencode run --format json --model zai-coding-plan/glm-5.3 <prompt>",
+      "sessionId": "ses_f9dfa8117ffeb2oaVmNBv8V3Rd",
+      "exitCode": 0,
+      "agent": "Sisyphus - ultraworker",
+      "provider": "zai-coding-plan",
+      "model": "glm-5.3",
+      "assistantFinish": "stop",
+      "assistantText": "TUI_NOREG_OK"
+    },
+    {
+      "command": "opencode run --format json --model zai-coding-plan/glm-5.3 --agent 'Hephaestus - Deep Agent' <prompt>",
+      "sessionId": "ses_f9df86b0dffekbkiRY6SyFH7Gn",
+      "exitCode": 0,
+      "agent": "Hephaestus - Deep Agent",
+      "provider": "zai-coding-plan",
+      "model": "glm-5.3",
+      "assistantFinish": "stop",
+      "assistantText": "TUI_NOREG_OK",
+      "guardReroutedAgent": false
+    }
+  ],
+  "mockLog": [
+    "branch=title call=1",
+    "branch=default call=2",
+    "branch=title call=3",
+    "branch=default call=4"
+  ]
+}
