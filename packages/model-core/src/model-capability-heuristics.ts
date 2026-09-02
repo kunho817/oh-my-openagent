@@ -83,6 +83,13 @@ export const HEURISTIC_MODEL_FAMILY_REGISTRY: ReadonlyArray<HeuristicModelFamily
     supportsThinking: false,
   },
   {
+    family: "glm-5.3",
+    includes: ["glm-5-3"],
+    variants: ["low", "high", "max"],
+    reasoningEfforts: ["low", "high", "max"],
+    supportsThinking: true,
+  },
+  {
     family: "glm",
     includes: ["glm"],
     variants: ["low", "medium", "high", "max"],
