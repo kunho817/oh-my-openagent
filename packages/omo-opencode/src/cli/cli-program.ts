@@ -8,7 +8,7 @@ import { createMcpOAuthCommand } from "./mcp-oauth"
 import { configureRuntimeCommands } from "./runtime-commands"
 import { runConfigMigrate } from "./config-migrate"
 import { availableInstallPlatforms, isSenpiPlatformEnabled, SENPI_PLATFORM_ENV_FLAG } from "./senpi-platform-flag"
-import type { InstallArgs } from "./types"
+import type { InstallArgs, InstallPreset } from "./types"
 import type { RunOptions } from "./run"
 import type { GetLocalVersionOptions } from "./get-local-version/types"
 import type { DoctorOptions } from "./doctor"
@@ -20,6 +20,7 @@ const program = new Command()
 
 type InstallCommandOptions = {
   readonly tui?: boolean
+  readonly preset?: InstallPreset
   readonly claude?: InstallArgs["claude"]
   readonly openai?: InstallArgs["openai"]
   readonly gemini?: InstallArgs["gemini"]
@@ -59,7 +60,8 @@ export function resolveInstallArgs(
 ): InstallArgs {
   const defaultPlatform =
     process.env.OMO_EDITION === "codex" || invocationName === "lazycodex" || invocationName === "lazycodex-ai" ? "codex" : undefined
-  const platform = options.platform ?? defaultPlatform
+  const isGlmPreset = options.preset === "glm"
+  const platform = options.platform ?? (isGlmPreset ? "opencode" : defaultPlatform)
   if (platform === "senpi" && !isSenpiPlatformEnabled()) {
     throw new Error(
       `The senpi install platform is not available in this release. Set ${SENPI_PLATFORM_ENV_FLAG}=1 to enable it from a source checkout.`,
@@ -67,20 +69,20 @@ export function resolveInstallArgs(
   }
 
   return {
-    tui: options.tui !== false,
-    claude: options.claude,
-    openai: options.openai,
-    gemini: options.gemini,
-    copilot: options.copilot,
+    tui: isGlmPreset ? false : options.tui !== false,
+    claude: options.claude ?? (isGlmPreset ? "no" : undefined),
+    openai: options.openai ?? (isGlmPreset ? "no" : undefined),
+    gemini: options.gemini ?? (isGlmPreset ? "no" : undefined),
+    copilot: options.copilot ?? (isGlmPreset ? "no" : undefined),
     platform,
-    opencodeZen: options.opencodeZen,
-    zaiCodingPlan: options.zaiCodingPlan,
-    kimiForCoding: options.kimiForCoding,
-    opencodeGo: options.opencodeGo,
-    bailianCodingPlan: options.bailianCodingPlan,
-    minimaxCnCodingPlan: options.minimaxCnCodingPlan,
-    minimaxCodingPlan: options.minimaxCodingPlan,
-    vercelAiGateway: options.vercelAiGateway,
+    opencodeZen: options.opencodeZen ?? (isGlmPreset ? "no" : undefined),
+    zaiCodingPlan: options.zaiCodingPlan ?? (isGlmPreset ? "yes" : undefined),
+    kimiForCoding: options.kimiForCoding ?? (isGlmPreset ? "no" : undefined),
+    opencodeGo: options.opencodeGo ?? (isGlmPreset ? "no" : undefined),
+    bailianCodingPlan: options.bailianCodingPlan ?? (isGlmPreset ? "no" : undefined),
+    minimaxCnCodingPlan: options.minimaxCnCodingPlan ?? (isGlmPreset ? "no" : undefined),
+    minimaxCodingPlan: options.minimaxCodingPlan ?? (isGlmPreset ? "no" : undefined),
+    vercelAiGateway: options.vercelAiGateway ?? (isGlmPreset ? "no" : undefined),
     codexAutonomous: options.codexAutonomous,
     skipAuth: options.skipAuth ?? false,
   }
@@ -100,6 +102,7 @@ program
   .command("install")
   .alias("setup")
   .description("Install and configure oh-my-opencode with interactive setup")
+  .addOption(new Option("--preset <preset>", "Install preset: glm (OpenCode with Z.ai Coding Plan only)").choices(["glm"]))
   .option("--no-tui", "Run in non-interactive mode (requires all options)")
   .option("--claude <value>", "Claude subscription: no, yes, max20")
   .option("--openai <value>", "OpenAI/ChatGPT subscription: no, yes (default: no)")
@@ -120,6 +123,7 @@ program
 .addHelpText("after", `
 Examples:
   $ bunx oh-my-opencode install
+  $ bunx oh-my-opencode install --preset=glm
   $ npx lazycodex-ai install --no-tui
   $ bunx oh-my-opencode install --no-tui --platform=both --claude=max20 --openai=yes --gemini=yes --copilot=no
   $ omo-agent-toolkit install --platform=codex --codex-autonomous
@@ -131,7 +135,7 @@ Model Providers (Priority: Native > Copilot > OpenCode Zen > Z.ai > Kimi > Baili
   Gemini        Native google/ models (Gemini 3.1 Pro, Flash)
   Copilot       github-copilot/ models (fallback)
   OpenCode Zen  opencode/ models (opencode/claude-opus-5, etc.)
-  Z.ai          zai-coding-plan/glm-5.2 (visual-engineering fallback)
+  Z.ai          zai-coding-plan/glm-5.3 and glm-5.3-flash
   Kimi          kimi-for-coding/kimi-k3 (Sisyphus/Prometheus fallback)
   Bailian       bailian-coding-plan/ models (Qwen, GLM, Kimi fallback)
   MiniMax       minimax-coding-plan/MiniMax-M3 (utility fallback)

@@ -1,6 +1,7 @@
 export type ClaudeSubscription = "no" | "yes" | "max20"
 export type BooleanArg = "no" | "yes"
 export type InstallPlatform = "opencode" | "codex" | "both" | "senpi"
+export type InstallPreset = "glm"
 
 export interface InstallArgs {
   tui: boolean
