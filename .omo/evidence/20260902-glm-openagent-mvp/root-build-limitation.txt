@@ -11,7 +11,7 @@ Observed boundary:
 Compensating evidence that passed:
 - packages/model-core typecheck
 - packages/omo-opencode typecheck
-- 244 affected tests and 554 assertions under the normal repository preload
+- 253 affected tests and 593 assertions under the normal repository preload after rebase
 - direct bundle of packages/omo-opencode/src/index.ts
 - direct bundle of packages/omo-opencode/src/cli/index.ts
 

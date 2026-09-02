@@ -13,6 +13,6 @@ Observed unrelated failures included:
 - Bun terminated with an internal assertion failure after roughly 122 seconds.
 
 No failure named a changed GLM capability, agent, routing catalog, or installer
-preset test. The consolidated changed-surface suite passed 244 tests with 554
+preset test. The post-rebase changed-surface suite passed 253 tests with 593
 assertions under the normal repository preload, and the complete root workspace
 typecheck passed. Clean Linux PR CI remains the authoritative root-suite gate.

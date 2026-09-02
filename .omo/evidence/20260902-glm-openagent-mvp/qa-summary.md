@@ -12,7 +12,7 @@ This evidence covers the OpenCode-only personal GLM preset from the installer bo
 
 ## What was observed
 
-- The consolidated affected suite passed 244 tests with 554 assertions under the normal repository preload.
+- The post-rebase affected suite passed 253 tests with 593 assertions under the normal repository preload. The earlier pre-rebase selection passed 244 tests with 554 assertions.
 - The complete root workspace typecheck and both changed-package typechecks succeeded. Direct Bun bundles of the plugin entry and CLI entry also succeeded.
 - The installer generated 11 canonical agent routes and 8 canonical category routes using only `zai-coding-plan/glm-5.3` and `zai-coding-plan/glm-5.3-flash`. It generated no foreign-provider routes and no fallback models.
 - Default Sisyphus returned exactly `TUI_NOREG_OK` through GLM-5.3.
@@ -32,7 +32,7 @@ Exact sanitized receipts are in:
 
 ## Why this is enough
 
-The tests pin the machine-consumed capability, routing, and installer contracts. The isolated install proves the user-facing preset produces the intended complete configuration. The two real `opencode run --format json` sessions prove that OpenCode can load this plugin, resolve the generated provider/model route, and execute both the default agent and the newly supported GLM Hephaestus path. The SQLite receipt proves the successful Hephaestus run was not silently switched by the chat hook. The unchanged real config and database receipts prove isolation.
+The tests pin the machine-consumed capability, routing, and installer contracts. The isolated install proves the user-facing preset produces the intended complete configuration. The two real `opencode run --format json` sessions prove that OpenCode can load this plugin, resolve the generated provider/model route, and execute both the default agent and the newly supported GLM Hephaestus path. The SQLite receipt proves the successful Hephaestus run was not silently switched by the chat hook. The unchanged real config and database receipts prove isolation. The post-rebase suite confirms the newer Codex-only upstream commits did not affect this OpenCode feature.
 
 ## What was omitted
 

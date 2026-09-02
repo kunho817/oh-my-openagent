@@ -41,7 +41,8 @@ Exit: 0
 Command: consolidated affected Bun test suite with the normal repository preload
 Coverage: model capability compatibility, Sisyphus and Sisyphus-Junior routing, Hephaestus factory/guard, Z.ai-only catalog, provider fallbacks, and install argument resolution
 Exit: 0
-Observed: 244 pass, 0 fail, 554 assertions
+Observed before rebase: 244 pass, 0 fail, 554 assertions
+Observed after conflict-free rebase onto upstream/dev d79ea1ff8: 253 pass, 0 fail, 593 assertions across 11 explicit test files
 
 Command: bun run build:lsp-daemon
 Exit: 0
